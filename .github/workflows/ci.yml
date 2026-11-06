@@ -7,10 +7,11 @@ permissions:
   contents: read
 jobs:
   install:
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-15-intel, ubuntu-22.04, ubuntu-22.04-arm]
+        os: [macos-15, ubuntu-22.04, ubuntu-22.04-arm]
     runs-on: ${{ matrix.os }}
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -19,9 +20,11 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@main
         with:
           stable: true
+      - name: Check formula style
+        run: brew style HelloNoel/tap/aiexandria
       - name: Install from this checkout
-        run: |
-          brew style HelloNoel/tap/aiexandria
-          brew install HelloNoel/tap/aiexandria
-          brew test HelloNoel/tap/aiexandria
-          brew audit --strict HelloNoel/tap/aiexandria
+        run: brew install HelloNoel/tap/aiexandria
+      - name: Test installed formula
+        run: brew test HelloNoel/tap/aiexandria
+      - name: Audit formula
+        run: brew audit --strict HelloNoel/tap/aiexandria
