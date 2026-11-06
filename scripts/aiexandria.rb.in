@@ -1,0 +1,43 @@
+class Aiexandria < Formula
+  desc "MCP server for Git documentation with optional semantic search"
+  homepage "https://hellonoel.github.io/aiexandria/"
+  license "Apache-2.0"
+
+  depends_on "git"
+
+  on_macos do
+    on_arm do
+      url "@base@/aiexandria-v@version@-aarch64-apple-darwin.tar.gz"
+      sha256 "@macos_arm_sha256@"
+    end
+    on_intel do
+      url "@base@/aiexandria-v@version@-x86_64-apple-darwin.tar.gz"
+      sha256 "@macos_intel_sha256@"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      depends_on arch: :arm64
+      url "@base@/aiexandria-v@version@-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "@linux_arm_sha256@"
+    end
+    on_intel do
+      depends_on arch: :x86_64
+      url "@base@/aiexandria-v@version@-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "@linux_intel_sha256@"
+    end
+  end
+
+  def install
+    bin.install "aiexandria"
+  end
+
+  test do
+    assert_match "aiexandria #{version}", shell_output("#{bin}/aiexandria --version")
+    (testpath/"README.md").write("# Homebrew test\n\nDocumentation for a local source.\n")
+    output = shell_output("#{bin}/aiexandria generate --repo #{testpath} --no-search --no-nested")
+    assert_match "README.md", output
+    assert_match "kind: doc", output
+  end
+end

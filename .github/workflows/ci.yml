@@ -1,0 +1,27 @@
+name: Homebrew
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, ubuntu-22.04, ubuntu-22.04-arm]
+    runs-on: ${{ matrix.os }}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@main
+        with:
+          stable: true
+      - name: Install from this checkout
+        run: |
+          brew style HelloNoel/tap/aiexandria
+          brew install HelloNoel/tap/aiexandria
+          brew test HelloNoel/tap/aiexandria
+          brew audit --strict HelloNoel/tap/aiexandria
