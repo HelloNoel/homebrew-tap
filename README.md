@@ -48,7 +48,7 @@ metadata:
 
 ```sh
 cd "$(brew --repository HelloNoel/tap)"
-python3 scripts/update.py 0.4.0
+python3 scripts/update.py 0.5.0
 brew style HelloNoel/tap/aiexandria
 brew install HelloNoel/tap/aiexandria
 brew test HelloNoel/tap/aiexandria
